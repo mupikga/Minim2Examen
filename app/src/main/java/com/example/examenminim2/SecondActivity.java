@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class SecondActivity extends AppCompatActivity {
 
         getUser();
         getRepos();
+
 
         Button returnBtn = (Button) findViewById(R.id.returnBtn2);
 
@@ -71,6 +73,9 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Users> call, Response<Users> response) {
                 if(response.isSuccessful()) {
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                    progressBar.setVisibility(View.VISIBLE);
+
                     Users user = response.body();
                     String f = "Followers: " + user.getFollowers();
                     String r = "Repositories: " + user.getRepos();
@@ -80,6 +85,8 @@ public class SecondActivity extends AppCompatActivity {
                     repos.setText(r);
                     following.setText(f2);
                     Picasso.get().load(user.getAvatar()).into(avatar);
+                    progressBar.setVisibility(View.INVISIBLE);
+
                 }else{
                     Log.i("User info failure", "Non existent user");
                     Intent intent = new Intent (getApplicationContext(),ErrorUser.class);
@@ -110,12 +117,23 @@ public class SecondActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Repos>> call, Response<List<Repos>> response) {
 
+                    if(!response.isSuccessful()){
+                        Intent intent = new Intent (getApplicationContext(), ErrorUser.class);
+                        startActivity(intent);
+                    }
+
+                    ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+                    progressBar.setVisibility(View.VISIBLE);
+
                     List<Repos> reposList = response.body();
                     ListAdapter listAdapter = new ListAdapter(reposList, SecondActivity.this);
                     RecyclerView recyclerView = findViewById(R.id.ListRecyclerView);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(new LinearLayoutManager(SecondActivity.this));
                     recyclerView.setAdapter(listAdapter);
+
+                    progressBar.setVisibility(View.INVISIBLE);
+
             }
 
             @Override

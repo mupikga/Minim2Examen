@@ -53,7 +53,7 @@
                 android:layout_marginEnd="9dp"
                 android:layout_marginBottom="2dp"
                 android:text="Language"
-                android:textAlignment="center"
+                android:textAlignment="textEnd"
                 android:textSize="20sp" />
 
         </RelativeLayout>
